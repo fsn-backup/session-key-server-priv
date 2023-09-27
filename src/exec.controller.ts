@@ -1,12 +1,13 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Body, Controller, Get, Post, Req } from '@nestjs/common';
+import { ExecService } from './exec.service';
 
 @Controller('exec')
 export class ExecController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly execService: ExecService) {}
 
-  @Get()
-  findAll(): string {
-    return 'test';
+  @Post('sync')
+  sync(@Body() body: any): string {
+    console.log(body);
+    return '0x';
   }
 }

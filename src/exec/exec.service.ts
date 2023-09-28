@@ -1,50 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { ethers } from "ethers";
+import { ethers } from 'ethers';
+import { Client, Presets, BundlerJsonRpcProvider } from './src';
+import { verifyingPaymaster } from './src/preset/middleware';
+import { pad, toHex, concatHex, getFunctionSelector } from 'viem';
+import { type Hex } from '@alchemy/aa-core';
+import { nftABI } from './abi/nft';
+import { UserOperationMiddlewareCtx } from './src/context';
 import {
-  Client,
-  Presets,
-  BundlerJsonRpcProvider
-} from "./src";
-import {
-  verifyingPaymaster,
-} from "./src/preset/middleware";
-import {
-  concat,
-  pad,
-  toHex,
-  concatHex,
-  hexToBigInt,
-  getFunctionSelector
-} from "viem";
-import {
-  type Address,
-  type Hex,
-} from "@alchemy/aa-core";
-import { nftABI } from "./abi.nft";
-import { UserOperationMiddlewareCtx } from "./src/context"
-import {
-  ParamCondition, Operation, Permission,
-  getMerkleTree, SessionKeyData, getEncodedData
-} from "./src/kernel_util"
-import { config } from 'process';
+  ParamCondition,
+  Operation,
+  Permission,
+  SessionKeyData,
+  getEncodedData,
+} from './src/kernel_util';
 import { Kernel } from './src/preset/builder/kernel';
 import {
-  EntryPoint,
   EntryPoint__factory,
   KernelFactory__factory,
   Kernel__factory,
 } from './src/typechain';
 
-import {
-  IPresetBuilderOpts,
-  ICall,
-  UserOperationMiddlewareFn,
-  IUserOperationBuilder,
-  IUserOperation
-} from "./src/types";
-
+import { ICall, IUserOperationBuilder, IUserOperation } from './src/types';
+import { deprecate } from 'util';
 
 @Injectable()
 export class ExecService {
@@ -324,6 +303,7 @@ export class ExecService {
     )
   }
 
+  // deprecated
   async getUserOpReceipt(userOpHash: string) {
     const block = await this.provider.getBlock('latest');
     while (true) {
@@ -336,5 +316,13 @@ export class ExecService {
       }
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
+  }
+
+  getProvider(): ethers.providers.JsonRpcProvider {
+    return this.provider;
+  }
+
+  getEntryPointInstance(): ethers.Contract {
+    return this.entryPointInstance;
   }
 }

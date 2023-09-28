@@ -14,8 +14,6 @@ import {
 export const verifyingPaymaster =
   (ops: IPaymasterOpts): UserOperationMiddlewareFn =>
     async (ctx) => {
-      console.log("Enter verifyingPaymaster")
-
       const paymasterRpc = ops.rpcUrl;
       const validAfter = ops.validAfter;
       const validUntil = ops.validUntil;

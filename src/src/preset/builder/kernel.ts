@@ -144,10 +144,6 @@ export class Kernel extends UserOperationBuilder {
       })
       .useMiddleware(instance.resolveAccount)
 
-    if (opts?.paymasterMiddleware) {
-      base = base.useMiddleware(opts.paymasterMiddleware)
-    }
-
     base = base.useMiddleware(getGasPrice(instance.provider))
       .useMiddleware(estimateUserOperationGas(instance.provider))
 
